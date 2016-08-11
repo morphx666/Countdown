@@ -96,8 +96,11 @@ Namespace My.Resources
         '''
         ''' === Parameters ===
         '''
-        '''/sp - Optionally, you may pass the /sp switch (after the input string) to see the program&apos;s progress:
-        '''countdown.exe TARGET:104;SOURCE:100,3,4,7,1, [rest of string was truncated]&quot;;.
+        '''/sp - Display the program&apos;s progress:
+        '''countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
+        '''
+        '''/all - Have the program find all possible solutions:
+        ''' [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property StrDocumentation() As String
             Get

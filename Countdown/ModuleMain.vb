@@ -29,6 +29,7 @@
 #If DEBUG Then
         ReDim args(0)
         args(0) = "TARGET:10;SOURCE:1,1,5,8;"
+		'args(0) = "TARGET:20;SOURCE:3,5,7,9;"
         'args(0) = "TARGET:952;SOURCE:25,50,75,100,3,6;"
         ' One solution: ((100+6)*3*75-50)/25 
         ' http://www.vidaddict.com/incredible-numbers-countdown/
@@ -53,13 +54,12 @@
             ShowHelp()
             Exit Sub
         Else
-            input = args(0)
-            If args.Count > 1 Then
+            Try
                 For Each arg In args
-                    If arg = "/sp" Then showProgress = True
-                    If arg = "/all" Then findAll = True
-                    If arg = "/w" Then pause = True
-                    If arg = "/e" Then ignoreErrors = True
+                    If arg = "/sp" Then showProgress = True : Continue For
+                    If arg = "/all" Then findAll = True : Continue For
+                    If arg = "/w" Then pause = True : Continue For
+                    If arg = "/e" Then ignoreErrors = True : Continue For
                     If arg.StartsWith("/p:") Then
                         Dim p As Integer = Integer.Parse(arg.Split(":"c)(1))
                         If p = 0 Then
@@ -68,19 +68,25 @@
                             precision = 1 / 10 ^ p
                         End If
                     End If
-                Next
-            End If
-        End If
 
-        Try
-            Dim parts As String() = input.Split(";"c)
-            target = Double.Parse(parts(0).Split(":"c)(1))
-            source = Array.ConvertAll(Of String, Double)(parts(1).Split(":"c)(1).Split(","c), Function(n) CDbl(n))
+                    If arg.StartsWith("TARGET:") Then
+                        target = Double.Parse(arg.Split(":"c)(1).Split(";")(0))
+                        If arg.Contains("SOURCE:") Then
+                            arg = arg.Substring(arg.IndexOf("S"))
+                            source = Array.ConvertAll(Of String, Double)(arg.Split(":"c)(1).Split(";")(0).Split(","c), Function(n) Double.Parse(n))
+                            Continue For
+                        End If
+                    End If
+
+                    Throw New Exception($"Unknown command line argument '{arg}'")
+                Next
+            Catch ex As Exception
+                ShowHelp(ex.Message)
+                Exit Sub
+            End Try
+
             If source.Length < 2 Then Throw New ArgumentException("SOURCE must have at least two numbers")
-        Catch ex As Exception
-            ShowHelp(ex.Message)
-            Exit Sub
-        End Try
+        End If
 
         Console.WriteLine()
         Console.WriteLine(String.Format("Calculating {0:n0} Permutations", source.Count.Fact()))

@@ -148,6 +148,7 @@ Version 0.2              (Dec 16, 2008)
     Implemented support to permutate the SOURCE list
 
 ====================================================================================
+
 This program is a solution to the problem presented
 by SiKaNrOnG from http://mur.derlicio.us/challenge/show/4</value>
   </data>
@@ -164,20 +165,20 @@ Will produce the following result: (8/(1-(1/5))) == 10
 
  === Parameters ===
 
-/sp - Optionally, you may pass the /sp switch (after the input string) to see the program's progress:
+/sp - Display the program's progress:
 countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
 
-/all - You may also pass the optional /all switch (after the input string) to have the program find all possible solutions:
+/all - Have the program find all possible solutions:
 countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /all
 
-/p - Use the /p switch to set the desired precision.
-For example, setting /p:3 will set the minimum precision to the thousands of a decimal (0.0001):
+/p - Set the desired precision.
+For example, setting /p:3 will set the maximum precision to the thousands of a decimal (0.0001):
 countdown.exe TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7; /p:3
 The default precision is set to 0, meaning that the calculated formula must exactly match the TARGET.
 A result using the == symbol will indicate an exact match while ~= will indicate an approximate match.
 
-/w - Use the /w parameter to pause the output whenever a solution is found.
+/w - Pause the output whenever a solution is found.
 
-/e - Use the /e parameter to ignore errors such as divisions by zero and overflows.</value>
+/e - Ignore errors such as divisions by zero and overflows.</value>
   </data>
 </root>
