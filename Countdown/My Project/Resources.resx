@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="StrChangeLog" xml:space="preserve">
+    <value>=== Change Log ===
+
+Version 0.8              (Aug 10, 2016)
+    Minor documentation improvements
+    Added a Unique() extension method that extracts the unique permutations in a T()() array
+
+Version 0.7              (Apr 30, 2016)
+    Minor bug fixes
+    Several UI enhancements
+
+Version 0.6              (Dec 01, 2010)
+    Fixed bug with the way the program was handling the parenthesis in the equations
+    Added the command line parameter /w to pause the output when a solution is found
+
+Version 0.5              (Aug 13, 2010)
+    Added the /p command line option to specify the minimum precision
+
+Version 0.4              (Aug 12, 2010)
+    Major performance improvements
+    Improved program's output
+    Improved time elapsed calculations
+    Fixed bug that affected negative numbers
+
+Version 0.3              (May 26, 2010)
+    Minor bug fixes
+
+Version 0.2              (Dec 16, 2008)
+    Implemented support to permutate the SOURCE list
+
+====================================================================================
+This program is a solution to the problem presented
+by SiKaNrOnG from http://mur.derlicio.us/challenge/show/4</value>
+  </data>
+  <data name="StrDocumentation" xml:space="preserve">
+    <value>The input string must be of the form:
+TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL VALUES SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e]
+
+For example, these are valid input strings:
+TARGET:104;SOURCE:100,3,4,7,1,2;
+TARGET:5;SOURCE:1,2,3,5;
+
+TARGET:10;SOURCE:1,1,5,8;
+Will produce the following result: (8/(1-(1/5))) == 10
+
+ === Parameters ===
+
+/sp - Optionally, you may pass the /sp switch (after the input string) to see the program's progress:
+countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
+
+/all - You may also pass the optional /all switch (after the input string) to have the program find all possible solutions:
+countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /all
+
+/p - Use the /p switch to set the desired precision.
+For example, setting /p:3 will set the minimum precision to the thousands of a decimal (0.0001):
+countdown.exe TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7; /p:3
+The default precision is set to 0, meaning that the calculated formula must exactly match the TARGET.
+A result using the == symbol will indicate an exact match while ~= will indicate an approximate match.
+
+/w - Use the /w parameter to pause the output whenever a solution is found.
+
+/e - Use the /e parameter to ignore errors such as divisions by zero and overflows.</value>
+  </data>
+</root>
