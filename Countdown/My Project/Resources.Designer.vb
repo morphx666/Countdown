@@ -59,49 +59,5 @@ Namespace My.Resources
                 resourceCulture = value
             End Set
         End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to === Change Log ===
-        '''
-        '''Version 0.9              (Aug 11, 2016)
-        '''    Added /sv option which displays step by step calculation for every solution
-        '''    UI enhancements to accommodate for the new /sv option
-        '''    Added an Evaluator(value As String) function in case we decide to switch to NCalc (https://ncalc.codeplex.com/)
-        '''    Enhanced parameters parsing
-        '''    Several minor bug fixes
-        '''
-        '''Version 0.8              (Aug 10, 2016)
-        '''    Minor documentation improvements
-        '''    Added a Unique() extension method that extrac [rest of string was truncated]&quot;;.
-        '''</summary>
-        Friend ReadOnly Property StrChangeLog() As String
-            Get
-                Return ResourceManager.GetString("StrChangeLog", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to The input string must be of the form:
-        '''TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL VALUES SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e] [/sv]
-        '''
-        '''For example, these are valid input strings:
-        '''TARGET:104;SOURCE:100,3,4,7,1,2;
-        '''TARGET:5;SOURCE:1,2,3,5;
-        '''
-        '''TARGET:10;SOURCE:1,1,5,8;
-        '''Will produce the following result: (8/(1-(1/5))) == 10
-        '''
-        ''' === Parameters ===
-        '''
-        '''/sp - Display the program&apos;s progress:
-        '''countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
-        '''
-        '''/all - Have the program find all possible soluti [rest of string was truncated]&quot;;.
-        '''</summary>
-        Friend ReadOnly Property StrDocumentation() As String
-            Get
-                Return ResourceManager.GetString("StrDocumentation", resourceCulture)
-            End Get
-        End Property
     End Module
 End Namespace

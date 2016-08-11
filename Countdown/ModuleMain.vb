@@ -259,7 +259,15 @@
 
     Private Sub ShowChangeLog()
         Console.WriteLine()
-        Console.WriteLine(My.Resources.StrChangeLog)
+        PrintFile("ChangeLog.txt")
+    End Sub
+
+    Private Sub PrintFile(fileName As String)
+        If IO.File.Exists(fileName) Then
+            Console.WriteLine(IO.File.ReadAllText(fileName))
+        Else
+            Console.WriteLine($"ERROR: {fileName} not found!")
+        End If
     End Sub
 
     Private Sub ShowHelp(Optional message As String = "")
@@ -273,7 +281,7 @@
             Console.WriteLine()
         End If
 
-        Console.WriteLine(My.Resources.StrDocumentation)
+        PrintFile("Documentation.txt")
 
         If message = "" Then ShowChangeLog()
     End Sub

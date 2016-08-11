@@ -1,0 +1,40 @@
+﻿=== Change Log ===
+
+Version 0.9              (Aug 11, 2016)
+    Added /sv option which displays step by step calculation for every solution
+    UI enhancements to accommodate for the new /sv option
+    Added an Evaluator(value As String) function in case we decide to switch to NCalc (https://ncalc.codeplex.com/)
+    Enhanced parameters parsing
+    Several minor bug fixes
+
+Version 0.8              (Aug 10, 2016)
+    Minor documentation improvements
+    Added a Unique() extension method that extracts the unique permutations in a T()() array
+
+Version 0.7              (Apr 30, 2016)
+    Minor bug fixes
+    Several UI enhancements
+
+Version 0.6              (Dec 01, 2010)
+    Fixed bug with the way the program was handling the parenthesis in the equations
+    Added the command line parameter /w to pause the output when a solution is found
+
+Version 0.5              (Aug 13, 2010)
+    Added the /p command line option to specify the minimum precision
+
+Version 0.4              (Aug 12, 2010)
+    Major performance improvements
+    Improved program's output
+    Improved time elapsed calculations
+    Fixed bug that affected negative numbers
+
+Version 0.3              (May 26, 2010)
+    Minor bug fixes
+
+Version 0.2              (Dec 16, 2008)
+    Implemented support to permutate the SOURCE list
+
+====================================================================================
+
+This program is a solution to the problem presented
+by SiKaNrOnG from http://mur.derlicio.us/challenge/show/4
