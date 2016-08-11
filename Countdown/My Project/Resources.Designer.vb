@@ -63,19 +63,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to === Change Log ===
         '''
+        '''Version 0.9              (Aug 11, 2016)
+        '''    Added /sv option which displays step by step calculation for every solution
+        '''    UI enhancements to accommodate for the new /sv option
+        '''    Added an Evaluator(value As String) function in case we decide to switch to NCalc (https://ncalc.codeplex.com/)
+        '''    Enhanced parameters parsing
+        '''    Several minor bug fixes
+        '''
         '''Version 0.8              (Aug 10, 2016)
         '''    Minor documentation improvements
-        '''    Added a Unique() extension method that extracts the unique permutations in a T()() array
-        '''
-        '''Version 0.7              (Apr 30, 2016)
-        '''    Minor bug fixes
-        '''    Several UI enhancements
-        '''
-        '''Version 0.6              (Dec 01, 2010)
-        '''    Fixed bug with the way the program was handling the parenthesis in the equations
-        '''    Added the command line parameter /w to pause the output when a solution is found
-        '''
-        '''Version [rest of string was truncated]&quot;;.
+        '''    Added a Unique() extension method that extrac [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property StrChangeLog() As String
             Get
@@ -85,7 +82,7 @@ Namespace My.Resources
         
         '''<summary>
         '''  Looks up a localized string similar to The input string must be of the form:
-        '''TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL VALUES SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e]
+        '''TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL VALUES SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e] [/sv]
         '''
         '''For example, these are valid input strings:
         '''TARGET:104;SOURCE:100,3,4,7,1,2;
@@ -99,8 +96,7 @@ Namespace My.Resources
         '''/sp - Display the program&apos;s progress:
         '''countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
         '''
-        '''/all - Have the program find all possible solutions:
-        ''' [rest of string was truncated]&quot;;.
+        '''/all - Have the program find all possible soluti [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property StrDocumentation() As String
             Get

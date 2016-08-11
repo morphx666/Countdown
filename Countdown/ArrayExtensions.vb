@@ -164,7 +164,7 @@ Module ArrayExtensions
     Public Function Unique(Of T)(values()() As T) As T()()
         Dim length As Integer = values(0).Length
         Dim isEqual As Boolean = False
-        Dim res()() As T
+        Dim res()() As T = Nothing
         Dim resIndex As Integer
 
         For i As Integer = 0 To values.Length - 1

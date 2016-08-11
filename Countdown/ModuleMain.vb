@@ -1,23 +1,45 @@
 ﻿Module ModuleMain
-    Sub Main(ByVal ParamArray args() As String)
+    Private navigator As System.Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
+    Private rex As System.Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
+    Private Evaluator As Func(Of String, Double) = Function(exp) navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")")
+
+    'Private Function Evaluator(value As String) As Double
+    '    Try
+    '        Dim exp As NCalc.Expression = New NCalc.Expression(value)
+    '        Dim r As Double = exp.Evaluate()
+    '        If exp.HasErrors Then Stop
+    '        Return r
+    '    Catch
+    '        ' Probably caused by a division by 0 or an overflow
+    '        Return Double.PositiveInfinity
+    '    End Try
+    'End Function
+
+    Sub Main(args() As String)
         Const margin As String = "    "
+
+        Dim m As Integer = 0
+
         Dim input As String = ""
         Dim target As Double
         Dim source() As Double = {}
+
         Dim showProgress As Boolean = False
         Dim findAll As Boolean = False
         Dim pause As Boolean = False
         Dim ignoreErrors As Boolean = False
+        Dim precision As Double = 0
+        Dim stepByStepEval As Boolean = False
+
         Dim iter As Integer = 0
         Dim solutionsFound As Integer = 0
-        Dim navigator As System.Xml.XPath.XPathNavigator = New System.Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
-        Dim rex As System.Text.RegularExpressions.Regex = New System.Text.RegularExpressions.Regex("([\+\-\*])")
-        Dim Evaluator As Func(Of String, Double) = Function(exp) CDbl(navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")"))
         Dim result As Double
         Dim numbers() As Double
+
         Dim swPermutations As Stopwatch = New Stopwatch()
         Dim swProcess As Stopwatch = New Stopwatch()
-        Dim precision As Double = 0
+
+        Dim steps As New List(Of String)
         Dim NumberToString = Function(n As Double)
                                  If n >= 0 Then
                                      Return n.ToString()
@@ -26,10 +48,11 @@
                                  End If
                              End Function
         Dim infoOffset As Integer = -1
+
 #If DEBUG Then
         ReDim args(0)
-        args(0) = "TARGET:10;SOURCE:1,1,5,8;"
-		'args(0) = "TARGET:20;SOURCE:3,5,7,9;"
+        'args(0) = "TARGET:10;SOURCE:1,1,5,8;"
+        'args(0) = "TARGET:20;SOURCE:3,5,7,9;"
         'args(0) = "TARGET:952;SOURCE:25,50,75,100,3,6;"
         ' One solution: ((100+6)*3*75-50)/25 
         ' http://www.vidaddict.com/incredible-numbers-countdown/
@@ -41,9 +64,13 @@
         'args(0) = "TARGET:0;SOURCE:6,0,1,5,5.5;"
         'args(0) = "TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7;"
         'args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
+
+        args(0) = "TARGET:0.3333;SOURCE:1,3,2,0;"
+        precision = 4
+        stepByStepEval = True
+        findAll = True
+        ignoreErrors = True
 #End If
-        'showProgress = True
-        'findAll = True
 
         Console.Clear()
         Console.Write("Countdown {0}.{1}",
@@ -60,14 +87,8 @@
                     If arg = "/all" Then findAll = True : Continue For
                     If arg = "/w" Then pause = True : Continue For
                     If arg = "/e" Then ignoreErrors = True : Continue For
-                    If arg.StartsWith("/p:") Then
-                        Dim p As Integer = Integer.Parse(arg.Split(":"c)(1))
-                        If p = 0 Then
-                            precision = 0
-                        Else
-                            precision = 1 / 10 ^ p
-                        End If
-                    End If
+                    If arg = "/sv" Then stepByStepEval = True : Continue For
+                    If arg.StartsWith("/p:") Then precision = Integer.Parse(arg.Split(":"c)(1)) : Continue For
 
                     If arg.StartsWith("TARGET:") Then
                         target = Double.Parse(arg.Split(":"c)(1).Split(";")(0))
@@ -87,15 +108,16 @@
 
             If source.Length < 2 Then Throw New ArgumentException("SOURCE must have at least two numbers")
         End If
+        precision = 1 / 10 ^ precision
 
         Console.WriteLine()
-        Console.WriteLine(String.Format("Calculating {0:n0} Permutations", source.Count.Fact()))
+        Console.WriteLine($"Calculating {source.Count.Fact():n0} Permutations")
 
         swPermutations.Start()
         Dim permutations()() As Double = source.Permutate3().Unique()
         swPermutations.Stop()
 
-        Console.WriteLine($"Finding Solution{If(findAll, "s", "")} for {permutations.Length} unique permutations...")
+        Console.WriteLine($"Finding Solution{If(findAll, "s", "")} for {permutations.Length:n0} unique permutations...")
         Console.WriteLine()
 
         swProcess.Start()
@@ -133,12 +155,7 @@
             Do
                 iter += 1
 
-                Try
-                    result = Evaluator(expression.Replace("−", "-"))
-                Catch
-                    ' Probably caused by a division by 0 or an overflow
-                    result = Double.PositiveInfinity
-                End Try
+                result = Evaluator(expression.Replace("−", "-"))
 
                 If Not (ignoreErrors AndAlso (result = Double.PositiveInfinity OrElse result = Double.NegativeInfinity)) Then
                     If Math.Abs(result - target) <= precision Then
@@ -149,27 +166,44 @@
                             solution = expression + " == " + target.ToString()
                         End If
 
+                        If stepByStepEval Then
+                            steps = EvalStepByStep(solution)
+                            solution = StrDup(Math.Max(steps.Max(Function(f) f.Length), solution.Length) - solution.Length, " ") + solution
+                        End If
+
                         Console.WriteLine(margin + "┌" + StrDup(solution.Length + 2, "─") + "┐")
                         Console.WriteLine(margin + "│" + StrDup(solution.Length + 2, " ") + "│")
                         Console.WriteLine(margin + "│ " + solution + " │")
+
+                        If stepByStepEval Then
+                            Dim i1 As Integer = solution.LastIndexOf("=")
+                            For Each s In steps
+                                Console.WriteLine(margin + "│ " + StrDup(Math.Max(0, i1 - s.LastIndexOf("=")), " ") + s + " │")
+                            Next
+                        End If
+
                         Console.WriteLine(margin + "│" + StrDup(solution.Length + 2, " ") + "│")
                         Console.WriteLine(margin + "└" + StrDup(solution.Length + 2, "─") + "┘")
 
-                        If infoOffset = -1 Then infoOffset = 2 * margin.Length + solution.Length
+                        If stepByStepEval Then Console.CursorTop -= steps.Count / 2
+
+                        infoOffset = 2 * margin.Length + solution.Length
 
                         Console.CursorTop -= 4
                         Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Permutation:     {0:N0} of {1:N0}",
-                                                            permutation + 1,
-                                                            permutations.Length)
+                                                        permutation + 1,
+                                                        permutations.Length)
                         Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Iteration:       {0:N0}", iter)
                         Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Processing Time: {0}", swProcess.Elapsed)
+
+                        If stepByStepEval Then Console.CursorTop += steps.Count / 2
 
                         Console.WriteLine()
                         Console.WriteLine()
 
                         solutionsFound += 1
 
-                        If pause Then Console.ReadKey()
+                        If pause Then Console.ReadKey(True)
 
                         If Not findAll Then Exit For
                     ElseIf showProgress Then
@@ -233,6 +267,7 @@
 
         If message <> "" Then
             Console.WriteLine(" === Error ===")
+            Console.WriteLine()
             Console.WriteLine("The INPUT string does not appear to be in the correct format:")
             Console.WriteLine(message)
             Console.WriteLine()
@@ -243,8 +278,38 @@
         If message = "" Then ShowChangeLog()
     End Sub
 
-#If DEBUG Then
-    Private Sub PrintPermutation(k()() As Double)
+    Private Function EvalStepByStep(exp As String) As List(Of String)
+        Dim FindInnerExpression = Function(e As String) As String
+                                      Dim i As Integer = 0
+                                      Dim i1 As Integer = 0
+                                      Dim i2 As Integer
+                                      Do
+                                          i = e.IndexOf("(", i + 1)
+                                          If i = -1 Then Exit Do
+                                          i1 = i
+                                      Loop
+
+                                      If i1 = -1 Then Return ""
+                                      i2 = e.IndexOf(")", i1)
+                                      Return e.Substring(i1, i2 - i1 + 1)
+                                  End Function
+
+        Dim steps As New List(Of String)
+        Dim innerExpression As String
+        Dim r As Double
+        Do
+            innerExpression = FindInnerExpression(exp)
+            If innerExpression = "" Then Exit Do
+            r = Evaluator(innerExpression)
+            exp = exp.Replace(innerExpression, r)
+            steps.Add(exp)
+        Loop
+
+        steps.RemoveAt(steps.Count - 1)
+        Return steps
+    End Function
+
+    Private Sub PrintPermutations(k()() As Double)
         For i As Integer = 0 To k.Length - 1
             For j As Integer = 0 To k(i).Length - 1
                 Debug.WriteLine($"[{i}]: {k(i)(j)}")
@@ -252,5 +317,4 @@
             Debug.WriteLine("")
         Next
     End Sub
-#End If
 End Module
