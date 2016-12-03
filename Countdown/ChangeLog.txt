@@ -1,4 +1,6 @@
 ﻿=== Change Log ===
+Version 1.0             (Dec  3, 2016)
+	Added support to calculate very large permutations... instantly!
 
 Version 0.9              (Aug 11, 2016)
     Added /sv option which displays step by step calculation for every solution
@@ -15,7 +17,7 @@ Version 0.7              (Apr 30, 2016)
     Minor bug fixes
     Several UI enhancements
 
-Version 0.6              (Dec 01, 2010)
+Version 0.6              (Dec  1, 2010)
     Fixed bug with the way the program was handling the parenthesis in the equations
     Added the command line parameter /w to pause the output when a solution is found
 

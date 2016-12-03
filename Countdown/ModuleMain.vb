@@ -22,13 +22,17 @@
 
         Dim input As String = ""
         Dim target As Double
+
+        Dim strTarget As String = ""
+        Dim strSolution As String
+
         Dim source() As Double = {}
 
         Dim showProgress As Boolean = False
         Dim findAll As Boolean = False
         Dim pause As Boolean = False
         Dim ignoreErrors As Boolean = False
-        Dim precision As Double = 0
+        Dim precision As Integer = 0
         Dim stepByStepEval As Boolean = False
 
         Dim iter As Integer = 0
@@ -54,8 +58,8 @@
         'args(0) = "TARGET:10;SOURCE:1,1,5,8;"
         'args(0) = "TARGET:20;SOURCE:3,5,7,9;"
         'args(0) = "TARGET:952;SOURCE:25,50,75,100,3,6;"
-        ' One solution: ((100+6)*3*75-50)/25 
-        ' http://www.vidaddict.com/incredible-numbers-countdown/
+        'One solution:     ((100+6)*3*75-50)/25 
+        '         http://www.vidaddict.com/incredible-numbers-countdown/
 
         'args(0) = "TARGET:120;SOURCE:2,5;"
         'args(0) = "TARGET:104;SOURCE:100,3,4,7,1,0,5,8;"
@@ -63,19 +67,16 @@
         'args(0) = "TARGET:-33.5;SOURCE:39,6,2;"
         'args(0) = "TARGET:0;SOURCE:6,0,1,5,5.5;"
         'args(0) = "TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7;"
-        'args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
-
-        args(0) = "TARGET:0.3333;SOURCE:1,3,2,0;"
-        precision = 4
-        stepByStepEval = True
+        args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
+        'args(0) = "TARGET:65536;SOURCE:2,16;"
+        'args(0) = "TARGET:0.1:SOURCE:10,2,0.1;"
+        showProgress = False
         findAll = True
-        ignoreErrors = True
 #End If
 
         Console.Clear()
-        Console.Write("Countdown {0}.{1}",
-                    My.Application.Info.Version.Major,
-                    My.Application.Info.Version.Minor)
+        Console.Write($"Countdown {My.Application.Info.Version}")
+        Console.WriteLine()
 
         If args.Count = 0 Then
             ShowHelp()
@@ -92,6 +93,7 @@
 
                     If arg.StartsWith("TARGET:") Then
                         target = Double.Parse(arg.Split(":"c)(1).Split(";")(0))
+                        strTarget = target.ToString()
                         If arg.Contains("SOURCE:") Then
                             arg = arg.Substring(arg.IndexOf("S"))
                             source = Array.ConvertAll(Of String, Double)(arg.Split(":"c)(1).Split(";")(0).Split(","c), Function(n) Double.Parse(n))
@@ -106,24 +108,29 @@
                 Exit Sub
             End Try
 
-            If source.Length < 2 Then Throw New ArgumentException("SOURCE must have at least two numbers")
+            If source.Length < 2 Then
+                ShowHelp("SOURCE must have at least two numbers")
+                Exit Sub
+            End If
         End If
-        precision = 1 / 10 ^ precision
+
+        If precision = 0 AndAlso strTarget.Contains(".") Then precision = strTarget.Split(".")(1).Length
+        Dim pl As Integer = source.Count.Fact()
 
         Console.WriteLine()
         Console.WriteLine($"Calculating {source.Count.Fact():n0} Permutations")
-
-        swPermutations.Start()
-        Dim permutations()() As Double = source.Permutate3().Unique()
-        swPermutations.Stop()
-
-        Console.WriteLine($"Finding Solution{If(findAll, "s", "")} for {permutations.Length:n0} unique permutations...")
         Console.WriteLine()
 
-        swProcess.Start()
-        For permutation As Integer = 0 To permutations.Length - 1
-            numbers = permutations(permutation)
+        swPermutations.Start()
+        Dim permutations = source.Permutate4()
+        Dim pn As Integer = 0
+        swPermutations.Stop()
 
+        swProcess.Start()
+        For Each numbers In permutations
+            ' TODO: Permutate parenthesis!!!!
+            'Dim pm = numbers.Permutate3()
+            ' This does not work - we need to permutate all grouping possibilities
             Dim opening As Integer = 0
             Dim closing As Integer = 0
             Dim srcLength As Integer = source.Count \ 2
@@ -141,14 +148,15 @@
             expression = expression.Replace("++", "+")
             expression = expression.PadRight(expression.Length + opening - closing, ")")
             expression = expression.Replace("+)", ")")
+            ' --------------------------------------------------------------------
 
             Dim originalExpression As String = expression
 
             If showProgress Then
-                If permutation > 0 Then Console.WriteLine()
+                If pn > 0 Then Console.WriteLine()
                 Console.WriteLine("Analyzing Permutation {0:N0} ({1:N2}%): {2}",
-                                  permutation + 1,
-                                  (permutation + 1) / permutations.Length * 100,
+                                  pn + 1,
+                                  (pn + 1) / pl * 100,
                                   numbers.ToStringList())
             End If
 
@@ -158,41 +166,38 @@
                 result = Evaluator(expression.Replace("−", "-"))
 
                 If Not (ignoreErrors AndAlso (result = Double.PositiveInfinity OrElse result = Double.NegativeInfinity)) Then
-                    If Math.Abs(result - target) <= precision Then
-                        Dim solution As String
+                    If Math.Round(result, precision) = target Then
                         If result <> target Then
-                            solution = expression + " ~= " + target.ToString()
+                            strSolution = expression + " ~= " + strTarget
                         Else
-                            solution = expression + " == " + target.ToString()
+                            strSolution = expression + " == " + strTarget
                         End If
 
                         If stepByStepEval Then
-                            steps = EvalStepByStep(solution)
-                            solution = StrDup(Math.Max(steps.Max(Function(f) f.Length), solution.Length) - solution.Length, " ") + solution
+                            steps = EvalStepByStep(strSolution)
+                            strSolution = StrDup(Math.Max(steps.Max(Function(f) f.Length), strSolution.Length) - strSolution.Length, " ") + strSolution
                         End If
 
-                        Console.WriteLine(margin + "┌" + StrDup(solution.Length + 2, "─") + "┐")
-                        Console.WriteLine(margin + "│" + StrDup(solution.Length + 2, " ") + "│")
-                        Console.WriteLine(margin + "│ " + solution + " │")
+                        Console.WriteLine(margin + "┌" + StrDup(strSolution.Length + 2, "─") + "┐")
+                        Console.WriteLine(margin + "│" + StrDup(strSolution.Length + 2, " ") + "│")
+                        Console.WriteLine(margin + "│ " + strSolution + " │")
 
                         If stepByStepEval Then
-                            Dim i1 As Integer = solution.LastIndexOf("=")
+                            Dim i1 As Integer = strSolution.LastIndexOf("=")
                             For Each s In steps
                                 Console.WriteLine(margin + "│ " + StrDup(Math.Max(0, i1 - s.LastIndexOf("=")), " ") + s + " │")
                             Next
                         End If
 
-                        Console.WriteLine(margin + "│" + StrDup(solution.Length + 2, " ") + "│")
-                        Console.WriteLine(margin + "└" + StrDup(solution.Length + 2, "─") + "┘")
+                        Console.WriteLine(margin + "│" + StrDup(strSolution.Length + 2, " ") + "│")
+                        Console.WriteLine(margin + "└" + StrDup(strSolution.Length + 2, "─") + "┘")
 
                         If stepByStepEval Then Console.CursorTop -= steps.Count / 2
 
-                        infoOffset = 2 * margin.Length + solution.Length
+                        infoOffset = 2 * margin.Length + strSolution.Length
 
                         Console.CursorTop -= 4
-                        Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Permutation:     {0:N0} of {1:N0}",
-                                                        permutation + 1,
-                                                        permutations.Length)
+                        Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Permutation:     {0:N0} of {1:N0}", pn + 1, pl)
                         Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Iteration:       {0:N0}", iter)
                         Console.CursorLeft = infoOffset : Console.WriteLine(margin + "Processing Time: {0}", swProcess.Elapsed)
 
@@ -229,6 +234,8 @@
                     End If
                 Next
             Loop While expression <> originalExpression
+
+            pn += 1
         Next
         swProcess.Stop()
 
@@ -254,6 +261,7 @@
     Private Sub ShowInfo()
         Console.WriteLine(" by Xavier Flix (Jun 12, 2008)")
         Console.WriteLine("http://software.xfx.net")
+        Console.WriteLine("https://whenimbored.xfx.net/2011/01/countdown-problem-4/")
         Console.WriteLine()
     End Sub
 

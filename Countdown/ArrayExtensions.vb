@@ -1,4 +1,4 @@
-﻿Imports System.Runtime.CompilerServices
+Imports System.Runtime.CompilerServices
 
 Module ArrayExtensions
     <Extension()>
@@ -40,11 +40,6 @@ Module ArrayExtensions
 
     <Extension()>
     Public Function RemoveByIndex(Of T)(n() As T, index As Integer) As T()
-        'Dim r() As T = {}
-        'For i As Integer = 0 To n.Length - 1
-        '    If i <> index Then r.Add(n(i))
-        'Next
-
         Dim r(n.Length - 2) As T
         Dim j As Integer
         For i As Integer = 0 To n.Length - 1
@@ -127,13 +122,14 @@ Module ArrayExtensions
         Dim length As Integer = n.Length
         Dim permNum As Integer = length.Fact()
         Dim res(permNum * length - 1) As T
-        Dim subPermNum As Integer = permNum / length ' (length - 1).Fact() = (!5 = !6/6)
-        Dim subPermLen As Integer
-        Dim resIndex As Integer
 
-        If n.Length = 2 Then
+        If length = 2 Then
             res = New T() {n(0), n(1), n(1), n(0)}
         Else
+            Dim subPermNum As Integer = permNum / length ' (length - 1).Fact() = (!5 = !6/6)
+            Dim subPermLen As Integer
+            Dim resIndex As Integer
+
             For i As Integer = 0 To length - 1
                 subPerm = Permutate3(n.RemoveByIndex(i), False)
                 subPermLen = subPerm(0).Length \ subPermNum
@@ -160,6 +156,29 @@ Module ArrayExtensions
         Return k
     End Function
 
+    <Extension()>
+    Public Iterator Function Permutate4(Of T)(n() As T) As IEnumerable(Of T())
+        Dim length As Integer = n.Length
+
+        If n.Length = 2 Then
+            Yield New T() {n(0), n(1)}
+            Yield New T() {n(1), n(0)}
+        Else
+            Dim permNum As Integer = length.Fact()
+            Dim subPermLen As Integer = length - 1
+            Dim subPermNum As Integer = permNum / length
+
+            For i As Integer = 0 To length - 1
+                For Each sp In Permutate4(n.RemoveByIndex(i))
+                    Dim r(length - 1) As T
+                    r(0) = n(i)
+                    Array.Copy(sp, 0, r, 1, subPermLen)
+                    Yield r
+                Next
+            Next
+        End If
+    End Function
+
     <Extension>
     Public Function Unique(Of T)(values()() As T) As T()()
         Dim length As Integer = values(0).Length
@@ -169,7 +188,6 @@ Module ArrayExtensions
 
         For i As Integer = 0 To values.Length - 1
             For j As Integer = 0 To i - 1
-
                 isEqual = True
                 For k = 0 To length - 1
                     If Not values(i)(k).Equals(values(j)(k)) Then

@@ -19,7 +19,7 @@ countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /all
 /p - Set the desired precision.
 For example, setting /p:3 will set the maximum precision to the thousands of a decimal (0.0001):
 countdown.exe TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7; /p:3
-The default precision is set to 0, meaning that the calculated formula must exactly match the TARGET.
+The default precision is automatically set to decimal places specified in the TARGET parameter.
 A result using the == symbol will indicate an exact match while ~= will indicate an approximate match.
 
 /w - Pause the output whenever a solution is found.
