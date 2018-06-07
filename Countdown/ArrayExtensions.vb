@@ -210,7 +210,7 @@ Module ArrayExtensions
     End Function
 
     <Extension()>
-    Public Function Fact(value As Integer) As Double
+    Public Function Fact(value As Integer) As ULong
         Dim result As ULong = 1
 
         For value = value To 2 Step -1

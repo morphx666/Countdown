@@ -1,5 +1,5 @@
 ﻿The input string must be of the form:
-TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL VALUES SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e] [/sv]
+TARGET:{VALUE};SOURCE:{LIST OF AT LEAST TWO REAL NUMBERS SEPARATED BY COMMAS}; [/sp] [/all] [/p:n] [/w] [/e] [/sv]
 
 For example, these are valid input strings:
 TARGET:104;SOURCE:100,3,4,7,1,2;

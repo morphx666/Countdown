@@ -1,6 +1,6 @@
 ﻿Module ModuleMain
-    Private navigator As System.Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
-    Private rex As System.Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
+    Private navigator As Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
+    Private rex As Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
     Private Evaluator As Func(Of String, Double) = Function(exp) navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")")
 
     'Private Function Evaluator(value As String) As Double
@@ -71,7 +71,7 @@
         'args(0) = "TARGET:65536;SOURCE:2,16;"
         'args(0) = "TARGET:0.1:SOURCE:10,2,0.1;"
         showProgress = False
-        findAll = True
+        findAll = False
 #End If
 
         Console.Clear()
@@ -116,25 +116,34 @@
 
         If precision = 0 AndAlso strTarget.Contains(".") Then precision = strTarget.Split(".")(1).Length
         Dim pl As Integer = source.Count.Fact()
+        Dim originalExpression As String
+        Dim opening As Integer
+        Dim closing As Integer
+        Dim srcLength As Integer
+        Dim expression As String
+        Dim numbersPermutation As IEnumerable(Of Double())
+        Dim pn As Integer = 0
 
+        Console.CursorVisible = False
         Console.WriteLine()
         Console.WriteLine($"Calculating {source.Count.Fact():n0} Permutations")
         Console.WriteLine()
 
         swPermutations.Start()
         Dim permutations = source.Permutate4()
-        Dim pn As Integer = 0
         swPermutations.Stop()
 
         swProcess.Start()
         For Each numbers In permutations
             ' TODO: Permutate parenthesis!!!!
-            'Dim pm = numbers.Permutate3()
             ' This does not work - we need to permutate all grouping possibilities
-            Dim opening As Integer = 0
-            Dim closing As Integer = 0
-            Dim srcLength As Integer = source.Count \ 2
-            Dim expression As String = ""
+
+            numbersPermutation = numbers.Permutate4()
+
+            opening = 0
+            closing = 0
+            srcLength = source.Count \ 2
+            expression = ""
 
             For i As Integer = 0 To source.Count - 1
                 If i > srcLength Then
@@ -148,16 +157,15 @@
             expression = expression.Replace("++", "+")
             expression = expression.PadRight(expression.Length + opening - closing, ")")
             expression = expression.Replace("+)", ")")
-            ' --------------------------------------------------------------------
 
-            Dim originalExpression As String = expression
+            originalExpression = expression
 
             If showProgress Then
                 If pn > 0 Then Console.WriteLine()
                 Console.WriteLine("Analyzing Permutation {0:N0} ({1:N2}%): {2}",
-                                  pn + 1,
-                                  (pn + 1) / pl * 100,
-                                  numbers.ToStringList())
+                          pn + 1,
+                          (pn + 1) / pl * 100,
+                          numbers.ToStringList())
             End If
 
             Do
@@ -233,8 +241,12 @@
                         i += 1
                     End If
                 Next
-            Loop While expression <> originalExpression
 
+                If Console.KeyAvailable AndAlso Console.ReadKey(True).Key = ConsoleKey.Escape Then
+                    Console.WriteLine("Execution terminated by user")
+                    Exit Sub
+                End If
+            Loop While expression <> originalExpression
             pn += 1
         Next
         swProcess.Stop()
@@ -252,6 +264,7 @@
         Console.WriteLine("Time Elapsed:")
         Console.WriteLine(margin + "Calculating Permutations: {0}", swPermutations.Elapsed)
         Console.WriteLine(margin + "Finding Solutions:        {0}", swProcess.Elapsed)
+        Console.CursorVisible = True
 
 #If DEBUG Then
         Console.ReadKey()
@@ -260,7 +273,9 @@
 
     Private Sub ShowInfo()
         Console.WriteLine(" by Xavier Flix (Jun 12, 2008)")
-        Console.WriteLine("http://software.xfx.net")
+        Console.WriteLine("https://software.xfx.net")
+        Console.WriteLine("https://whenimbored.xfx.net")
+        Console.WriteLine("https://github.com/morphx666")
         Console.WriteLine("https://whenimbored.xfx.net/2011/01/countdown-problem-4/")
         Console.WriteLine()
     End Sub
