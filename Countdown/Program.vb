@@ -44,13 +44,7 @@
         Dim swProcess As Stopwatch = New Stopwatch()
 
         Dim steps As New List(Of String)
-        Dim NumberToString = Function(n As Double)
-                                 If n >= 0 Then
-                                     Return n.ToString()
-                                 Else
-                                     Return "(" + n.ToString() + ")"
-                                 End If
-                             End Function
+        Dim NumberToString = Function(n As Double) If(n >= 0, n.ToString(), $"({n})")
         Dim infoOffset As Integer = -1
 
 #If DEBUG Then
@@ -244,6 +238,7 @@
 
                 If Console.KeyAvailable AndAlso Console.ReadKey(True).Key = ConsoleKey.Escape Then
                     Console.WriteLine("Execution terminated by user")
+                    Console.CursorVisible = True
                     Exit Sub
                 End If
             Loop While expression <> originalExpression

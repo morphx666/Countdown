@@ -4,8 +4,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Countdown</RootNamespace>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyVersion>2021.4.20.14</AssemblyVersion>
-    <FileVersion>2021.4.20.14</FileVersion>
+    <AssemblyVersion>2021.4.20.15</AssemblyVersion>
+    <FileVersion>2021.4.20.15</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
