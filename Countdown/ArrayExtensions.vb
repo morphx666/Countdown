@@ -160,13 +160,13 @@ Module ArrayExtensions
     Public Iterator Function Permutate4(Of T)(n() As T) As IEnumerable(Of T())
         Dim length As Integer = n.Length
 
-        If n.Length = 2 Then
+        If length = 2 Then
             Yield New T() {n(0), n(1)}
             Yield New T() {n(1), n(0)}
         Else
-            Dim permNum As Integer = length.Fact()
+            'Dim permNum As Integer = length.Fact()
             Dim subPermLen As Integer = length - 1
-            Dim subPermNum As Integer = permNum / length
+            'Dim subPermNum As Integer = permNum / length
 
             For i As Integer = 0 To length - 1
                 For Each sp In Permutate4(n.RemoveByIndex(i))

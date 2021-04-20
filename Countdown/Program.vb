@@ -1,4 +1,4 @@
-﻿Module ModuleMain
+﻿Module Program
     Private navigator As Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
     Private rex As Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
     Private Evaluator As Func(Of String, Double) = Function(exp) navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")")
@@ -15,7 +15,7 @@
     '    End Try
     'End Function
 
-    Sub Main(args() As String)
+    Public Sub Main(args() As String)
         Const margin As String = "    "
 
         Dim m As Integer = 0
@@ -67,7 +67,7 @@
         'args(0) = "TARGET:-33.5;SOURCE:39,6,2;"
         'args(0) = "TARGET:0;SOURCE:6,0,1,5,5.5;"
         'args(0) = "TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7;"
-        args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
+        'args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
         'args(0) = "TARGET:65536;SOURCE:2,16;"
         'args(0) = "TARGET:0.1:SOURCE:10,2,0.1;"
         showProgress = False
@@ -75,7 +75,7 @@
 #End If
 
         Console.Clear()
-        Console.Write($"Countdown {My.Application.Info.Version}")
+        Console.Write($"Countdown {Reflection.Assembly.GetExecutingAssembly().GetName().Version}")
         Console.WriteLine()
 
         If args.Count = 0 Then
@@ -174,7 +174,8 @@
                 result = Evaluator(expression.Replace("−", "-"))
 
                 If Not (ignoreErrors AndAlso (result = Double.PositiveInfinity OrElse result = Double.NegativeInfinity)) Then
-                    If Math.Round(result, precision) = target Then
+                    'If precision = 0 Then result = Math.Floor(result)
+                    If (precision = 0 AndAlso Math.Floor(result) = target) OrElse (Math.Round(result, precision) = target) Then
                         If result <> target Then
                             strSolution = expression + " ~= " + strTarget
                         Else
@@ -273,10 +274,8 @@
 
     Private Sub ShowInfo()
         Console.WriteLine(" by Xavier Flix (Jun 12, 2008)")
-        Console.WriteLine("https://software.xfx.net")
-        Console.WriteLine("https://whenimbored.xfx.net")
-        Console.WriteLine("https://github.com/morphx666")
-        Console.WriteLine("https://whenimbored.xfx.net/2011/01/countdown-problem-4/")
+        Console.WriteLine("     https://github.com/morphx666/Countdown")
+        Console.WriteLine("     https://whenimbored.xfx.net/2011/01/countdown-problem-4/")
         Console.WriteLine()
     End Sub
 
