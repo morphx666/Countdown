@@ -4,8 +4,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Countdown</RootNamespace>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyVersion>2021.4.20.3</AssemblyVersion>
-    <FileVersion>2021.4.20.3</FileVersion>
+    <AssemblyVersion>2021.4.20.14</AssemblyVersion>
+    <FileVersion>2021.4.20.14</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,5 +15,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\Release\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="ChangeLog.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documentation.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

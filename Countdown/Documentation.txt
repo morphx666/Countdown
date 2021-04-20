@@ -10,20 +10,24 @@ Will produce the following result: (8/(1-(1/5))) == 10
 
  === Parameters ===
 
-/sp - Display the program's progress:
-countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /sp
+/sp  - Display the program's progress:
+       countdown TARGET:104;SOURCE:100,3,4,7,1,2; /sp
 
 /all - Have the program find all possible solutions:
-countdown.exe TARGET:104;SOURCE:100,3,4,7,1,2; /all
+       countdown TARGET:104;SOURCE:100,3,4,7,1,2; /all
 
-/p - Set the desired precision.
-For example, setting /p:3 will set the maximum precision to the thousands of a decimal (0.0001):
-countdown.exe TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7; /p:3
-The default precision is automatically set to decimal places specified in the TARGET parameter.
-A result using the == symbol will indicate an exact match while ~= will indicate an approximate match.
+/p   - Set the desired precision.
+       For example, setting /p:3 will set the maximum precision to the thousands of a decimal (0.0001):
+       countdown TARGET:50.5;SOURCE:1,2,3,4,5,6.2,7; /p:3
 
-/w - Pause the output whenever a solution is found.
+       The default precision is automatically set to decimal places specified in the TARGET parameter.
+       Using /p:0 will exclude all non exact results.
 
-/e - Ignore errors such as divisions by zero and overflows.
+       A result displayed with the == symbol will indicate an exact match while ~= will indicate
+       an approximate match, based on the set precision.
 
-/sv - Show a step by step evaluation of every solution.
+/w   - Pause the output whenever a solution is found.
+
+/e   - Ignore errors such as divisions by zero and overflows.
+
+/sv  - Show a step by step evaluation of every solution.

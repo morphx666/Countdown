@@ -70,6 +70,7 @@
         'args(0) = "TARGET:5;SOURCE:1,1,1,1,1,10,1,1,1,1,1;"
         'args(0) = "TARGET:65536;SOURCE:2,16;"
         'args(0) = "TARGET:0.1:SOURCE:10,2,0.1;"
+        args(0) = "TARGET:509;SOURCE:50,100,75,25,6,7; /p:0"
         showProgress = False
         findAll = False
 #End If
@@ -174,13 +175,11 @@
                 result = Evaluator(expression.Replace("−", "-"))
 
                 If Not (ignoreErrors AndAlso (result = Double.PositiveInfinity OrElse result = Double.NegativeInfinity)) Then
-                    'If precision = 0 Then result = Math.Floor(result)
-                    If (precision = 0 AndAlso Math.Floor(result) = target) OrElse (Math.Round(result, precision) = target) Then
-                        If result <> target Then
-                            strSolution = expression + " ~= " + strTarget
-                        Else
-                            strSolution = expression + " == " + strTarget
-                        End If
+                    If If(precision = 0,
+                            result = target,
+                            Math.Round(result, precision) = target) Then
+
+                        strSolution = expression + If(result = target, " == ", " ~= ") + strTarget
 
                         If stepByStepEval Then
                             steps = EvalStepByStep(strSolution)
