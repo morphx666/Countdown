@@ -1,7 +1,7 @@
 ﻿Module Program
-    Private navigator As Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
-    Private rex As Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
-    Private Evaluator As Func(Of String, Double) = Function(exp) navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")")
+    Private ReadOnly navigator As Xml.XPath.XPathNavigator = New Xml.XPath.XPathDocument(New IO.StringReader("<r/>")).CreateNavigator()
+    Private ReadOnly rex As Text.RegularExpressions.Regex = New Text.RegularExpressions.Regex("([\+\-\*])")
+    Private ReadOnly Evaluator As Func(Of String, Double) = Function(exp) navigator.Evaluate("number(" + rex.Replace(exp, " ${1} ").Replace("/", " div ").Replace("%", " mod ") + ")")
 
     'Private Function Evaluator(value As String) As Double
     '    Try
@@ -26,7 +26,7 @@
         Dim strTarget As String = ""
         Dim strSolution As String
 
-        Dim source() As Double = {}
+        Dim source() As Double = Array.Empty(Of Double)()
 
         Dim showProgress As Boolean = False
         Dim findAll As Boolean = False
@@ -73,7 +73,7 @@
         Console.Write($"Countdown {Reflection.Assembly.GetExecutingAssembly().GetName().Version}")
         Console.WriteLine()
 
-        If args.Count = 0 Then
+        If args.Length = 0 Then
             ShowHelp()
             Exit Sub
         Else
@@ -110,7 +110,7 @@
         End If
 
         If precision = 0 AndAlso strTarget.Contains(".") Then precision = strTarget.Split(".")(1).Length
-        Dim pl As Integer = source.Count.Fact()
+        Dim pl As Integer = source.Length.Fact()
         Dim originalExpression As String
         Dim opening As Integer
         Dim closing As Integer
@@ -121,11 +121,11 @@
 
         Console.CursorVisible = False
         Console.WriteLine()
-        Console.WriteLine($"Calculating {source.Count.Fact():n0} Permutations")
+        Console.WriteLine($"Calculating {source.Length.Fact():n0} Permutations")
         Console.WriteLine()
 
         swPermutations.Start()
-        Dim permutations = source.Permutate4()
+        Dim permutations As IEnumerable = source.Permutate4()
         swPermutations.Stop()
 
         swProcess.Start()
@@ -137,10 +137,10 @@
 
             opening = 0
             closing = 0
-            srcLength = source.Count \ 2
+            srcLength = source.Length \ 2
             expression = ""
 
-            For i As Integer = 0 To source.Count - 1
+            For i As Integer = 0 To source.Length - 1
                 If i > srcLength Then
                     expression += String.Format("+{0})", NumberToString(numbers(i)).Replace("-", "−"))
                     closing += 1

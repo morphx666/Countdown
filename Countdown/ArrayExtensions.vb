@@ -30,7 +30,7 @@ Module ArrayExtensions
 
     <Extension()>
     Private Function RemoveByValue2(Of T)(n() As T, value As T) As T()
-        Dim r() As T = {}
+        Dim r() As T = Array.Empty(Of T)()
         For i As Integer = 0 To n.Length - 1
             If Not n(i).Equals(value) Then r.Add(n(i))
         Next
@@ -56,7 +56,7 @@ Module ArrayExtensions
     Public Function Permutate(Of T)(n() As T) As T()()
         Dim subPerm()() As T
         Dim length As Integer = n.Length
-        Dim res() As T = {}
+        Dim res() As T = Array.Empty(Of T)()
 
         If n.Length = 2 Then
             res = New T() {n(0), n(1), n(1), n(0)}
@@ -70,10 +70,10 @@ Module ArrayExtensions
             Next
         End If
 
-        Dim k()() As T = {}
+        Dim k()() As T = Array.Empty(Of T())()
         For i As Integer = 0 To res.Length \ length - 1
             ReDim Preserve k(i)
-            k(i) = New T() {}
+            k(i) = Array.Empty(Of T)()
             k(i).Add(res, i * length, length)
         Next
 
@@ -85,7 +85,7 @@ Module ArrayExtensions
         Dim subPerm()() As T
         Dim length As Integer = n.Length
         Dim subPermNum As Integer = (length - 1).Fact()
-        Dim res() As T = {}
+        Dim res() As T = Array.Empty(Of T)()
 
         If n.Length = 2 Then
             res = New T() {n(0), n(1), n(1), n(0)}
@@ -100,16 +100,16 @@ Module ArrayExtensions
             Next
         End If
 
-        Dim k()() As T = {}
+        Dim k()() As T = Array.Empty(Of T())()
         If deLinearize Then
             For i As Integer = 0 To res.Length \ length - 1
                 ReDim Preserve k(i)
-                k(i) = New T() {}
+                k(i) = Array.Empty(Of T)()
                 k(i).Add(res, i * length, length)
             Next
         Else
             ReDim k(0)
-            k(0) = New T() {}
+            k(0) = Array.Empty(Of T)()
             k(0).Add(res)
         End If
 
@@ -227,10 +227,6 @@ Module ArrayExtensions
             r += n(i).ToString() + ", "
         Next
 
-        If r <> "" Then
-            Return r.Substring(0, r.Length - 2)
-        Else
-            Return ""
-        End If
+        Return If(r = "", "", r.Substring(0, r.Length - 2))
     End Function
 End Module
